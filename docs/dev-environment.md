@@ -12,7 +12,7 @@ Docker Compose 하나로 4개 서비스를 띄운다.
 |---|---|---|---|
 | `db` | PostgreSQL 16 + pgvector | 5432 | 최초 기동 시 `vector` 확장 자동 설치 |
 | `backend` | Python 3.12, FastAPI | 8000 | 코드 수정 시 자동 재시작 (`--reload`) |
-| `ai` | Python 3.12, FastAPI | 8001 | RAG·멀티모달 담당. 구조는 backend와 동일. 백엔드는 `AI_BASE_URL`(`http://ai:8001`)로 호출 |
+| `ai` | Python 3.12, FastAPI, LangChain 1.x | 8001 | RAG·멀티모달 담당. 구조는 backend와 동일. 백엔드는 `AI_BASE_URL`(`http://ai:8001`)로 호출 |
 | `frontend` | React 19, TypeScript, Vite | 5173 | 코드 수정 시 화면 자동 반영, `/api/*` → 백엔드 프록시 |
 
 사전 준비물: **Docker Desktop만** 있으면 된다. 로컬에 Python·Node·PostgreSQL을 따로 설치할 필요 없음.
