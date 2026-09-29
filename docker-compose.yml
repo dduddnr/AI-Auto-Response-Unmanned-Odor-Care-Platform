@@ -1,5 +1,5 @@
 # 로컬 개발 환경: db(PostgreSQL + pgvector) / backend(FastAPI) / ai(FastAPI, RAG·멀티모달) / frontend(React + Vite)
-# 실행: cp .env.example .env && docker compose up --build
+# 실행: docker compose up --build  (.env 없으면 아래 기본값으로 뜬다. 키가 필요하면 루트에 .env 작성)
 
 # 클론한 폴더명과 무관하게 컨테이너·볼륨 이름을 같게 하려고 고정한다 (한글 폴더명이면 빈 이름 오류도 방지)
 name: odor-chatbot
@@ -62,7 +62,7 @@ services:
     build: ./frontend
     command: npm run dev -- --host 0.0.0.0 --port 5173
     environment:
-      VITE_PROXY_TARGET: http://backend:8000
+      PROXY_TARGET: http://backend:8000
     ports:
       - "127.0.0.1:${FRONTEND_PORT:-5173}:5173"
     volumes:

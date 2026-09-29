@@ -1,0 +1,15 @@
+# gitleaks 설정: 기본 규칙 + 공공데이터포털 인증키(serviceKey) 전용 규칙
+title = "odor-chatbot gitleaks config"
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "data-go-kr-service-key"
+description = "공공데이터포털(data.go.kr) API 인증키 serviceKey"
+regex = '''(?i)service_?key["']?\s*[:=]\s*["']?([A-Za-z0-9%+/=]{20,})'''
+secretGroup = 1
+keywords = ["servicekey", "service_key"]
+
+[[rules.allowlists]]
+regexes = ['''(?i)REDACTED''']

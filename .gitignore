@@ -1,7 +1,13 @@
 # env / secrets
 .env
 .env.*
-!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# logs
+*.log
 
 # python
 __pycache__/
