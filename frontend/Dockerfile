@@ -3,7 +3,8 @@ FROM node:22-alpine
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm install
+# lock 파일 그대로, 패키지 해시(integrity) 검증하며 설치
+RUN npm ci
 
 COPY . .
 
