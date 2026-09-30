@@ -1,0 +1,28 @@
+# env / secrets
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+
+# logs
+*.log
+
+# python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+
+# node
+node_modules/
+dist/
+
+# os / editor
+.DS_Store
+.idea/
+.vscode/
+
+*.tsbuildinfo

@@ -1,0 +1,6 @@
+node_modules/
+dist/
+
+# 비밀값: 이미지 안에 복사되지 않게
+.env
+.env.*

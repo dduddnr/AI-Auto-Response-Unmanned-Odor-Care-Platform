@@ -1,0 +1,14 @@
+fastapi==0.141.1
+uvicorn[standard]==0.54.0
+pydantic==2.13.5
+pydantic-settings==2.15.0
+psycopg[binary]==3.3.6
+httpx==0.28.1
+pytest==9.1.1
+
+# LangChain (1차·3차 회의: 멀티모달·RAG) — LLM 제공자 패키지는 모델 확정 후 추가
+langchain==1.4.3
+langchain-core==1.6.5
+langchain-text-splitters==1.1.2
+langchain-postgres==0.0.18
+langchain-ollama==1.1.0

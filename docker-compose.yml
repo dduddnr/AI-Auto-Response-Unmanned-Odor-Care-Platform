@@ -1,0 +1,79 @@
+# 로컬 개발 환경: db(PostgreSQL + pgvector) / backend(FastAPI) / ai(FastAPI, RAG·멀티모달) / frontend(React + Vite)
+# 실행: docker compose up --build  (.env 없으면 아래 기본값으로 뜬다. 키가 필요하면 루트에 .env 작성)
+
+# 클론한 폴더명과 무관하게 컨테이너·볼륨 이름을 같게 하려고 고정한다 (한글 폴더명이면 빈 이름 오류도 방지)
+name: odor-chatbot
+
+# 포트는 모두 127.0.0.1에만 연다 (같은 와이파이의 다른 기기에서 DB·API 접속 차단)
+
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-odor}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-odor}
+      POSTGRES_DB: ${POSTGRES_DB:-odor}
+      TZ: Asia/Seoul
+    ports:
+      - "127.0.0.1:${DB_PORT:-5432}:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./backend/db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-odor} -d ${POSTGRES_DB:-odor}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build: ./backend
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-odor}:${POSTGRES_PASSWORD:-odor}@db:5432/${POSTGRES_DB:-odor}
+      APP_ENV: ${APP_ENV:-local}
+      AIRKOREA_API_KEY: ${AIRKOREA_API_KEY:-}
+      AI_BASE_URL: http://ai:8001
+      TZ: Asia/Seoul
+    ports:
+      - "127.0.0.1:${BACKEND_PORT:-8000}:8000"
+    volumes:
+      - ./backend:/app
+    depends_on:
+      db:
+        condition: service_healthy
+
+  ai:
+    build: ./ai
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-odor}:${POSTGRES_PASSWORD:-odor}@db:5432/${POSTGRES_DB:-odor}
+      APP_ENV: ${APP_ENV:-local}
+      LLM_API_KEY: ${LLM_API_KEY:-}
+      TZ: Asia/Seoul
+    ports:
+      - "127.0.0.1:${AI_PORT:-8001}:8001"
+    volumes:
+      - ./ai:/app
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build: ./frontend
+    command:
+      - sh
+      - -c
+      - npm ci && exec npm run dev -- --host 0.0.0.0 --port 5173
+    environment:
+      PROXY_TARGET: http://backend:8000
+    ports:
+      - "127.0.0.1:${FRONTEND_PORT:-5173}:5173"
+    volumes:
+      - ./frontend:/app
+      - frontend_node_modules:/app/node_modules
+    depends_on:
+      - backend
+
+volumes:
+  db_data:
+  frontend_node_modules:
