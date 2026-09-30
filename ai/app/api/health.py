@@ -13,7 +13,14 @@ def check_db() -> dict:
             row = conn.execute(
                 "SELECT extversion FROM pg_extension WHERE extname = 'vector'"
             ).fetchone()
-        return {"status": "ok", "pgvector": row[0] if row else None}
+        if row is None:
+            return {
+                "status": "error",
+                "pgvector": None,
+                "detail": "PgvectorExtensionMissing",
+            }
+
+        return {"status": "ok", "pgvector": row[0]}
     except Exception as e:  # 헬스체크는 예외를 던지지 않고 상태로 보고한다
         return {"status": "error", "detail": type(e).__name__}
 

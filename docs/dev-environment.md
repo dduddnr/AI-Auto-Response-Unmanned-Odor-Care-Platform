@@ -77,6 +77,20 @@ LLM_API_KEY=
 | 백엔드·AI 라이브러리 추가 | `backend/requirements.txt` 또는 `ai/requirements.txt`에 추가 → `docker compose up --build` |
 | 프론트 라이브러리 추가 | `docker compose exec frontend npm install <패키지명>` |
 
+### 프론트엔드 패키지 동기화
+
+프론트엔드는 컨테이너 시작 시 `npm ci`를 실행하여
+`node_modules` 볼륨을 `package-lock.json`과 동기화합니다.
+
+팀원이 추가·변경한 패키지를 Git으로 받아온 뒤에는 다음 명령으로 다시 실행합니다.
+
+```bash
+docker compose up -d --build frontend
+```
+
+설치가 끝난 뒤 Vite가 시작되므로 잠시 기다려주세요.
+별도 Compose 프로젝트명을 사용 중이라면 명령에 동일한 `-p 프로젝트명`을 붙입니다.
+
 ---
 
 ## 3. 폴더 구조
